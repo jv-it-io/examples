@@ -1,15 +1,21 @@
 package be.jnn.training.pluralsight.resttemplate.controller;
 
-import be.jnn.training.pluralsight.resttemplate.model.ErrorMessage;
+import be.jnn.training.pluralsight.resttemplate.model.FieldErrorMessage;
 import be.jnn.training.pluralsight.resttemplate.model.Friend;
 import be.jnn.training.pluralsight.resttemplate.repository.FriendRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
-import javax.xml.bind.ValidationException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.validation.Valid;
+
 
 @RestController
 public class FriendController {
@@ -18,17 +24,20 @@ public class FriendController {
     FriendRepository friendRepository;
 
     @PostMapping("/friend")
-    Friend create(@RequestBody Friend friend) throws ValidationException {
-        if(friend.getId() != null &&
-        friend.getLastName() != null &&
-        friend.getFirstName() != null) {
-            return friendRepository.save(friend);
-        }
-        else{
-           throw new ValidationException("Friend cannot be created");
-        }
-    }
+    Friend create(@RequestBody @Valid Friend friend)  {
 
+            return friendRepository.save(friend);
+
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    List<FieldErrorMessage> exception(MethodArgumentNotValidException e){
+        List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+        List<FieldErrorMessage> fieldErrorMessages = fieldErrors.stream().map(error -> new FieldErrorMessage(error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.toList());
+
+        return fieldErrorMessages;
+    }
 
 
     @GetMapping("/friend")
