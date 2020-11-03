@@ -24,6 +24,14 @@ public class Friend {
     @JsonIgnore
     private Boolean married;
 
+    public Friend(String firstName, String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public Friend() {
+    }
+
     private int age;
 
     private List<Address> addresses;

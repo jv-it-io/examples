@@ -24,7 +24,7 @@ public class FriendController {
     FriendRepository friendRepository;
 
     @PostMapping("/friend")
-    Friend create(@RequestBody @Valid Friend friend)  {
+    public Friend create(@RequestBody @Valid Friend friend)  {
 
             return friendRepository.save(friend);
 
@@ -41,12 +41,12 @@ public class FriendController {
 
 
     @GetMapping("/friend")
-    Iterable<Friend> read(){
+    public Iterable<Friend> read(){
         return friendRepository.findAll();
     }
 
     @PutMapping("/friend")
-    ResponseEntity<Friend> update(@RequestBody Friend friend)
+    public ResponseEntity<Friend> update(@RequestBody Friend friend)
     {
         if(friendRepository.findById(friend.getId()).isPresent())
             return new ResponseEntity(friendRepository.save(friend), HttpStatus.OK);
@@ -56,7 +56,7 @@ public class FriendController {
     }
 
     @DeleteMapping("/friend/{id}")
-    void delete(@PathVariable String id){
+    public void delete(@PathVariable String id){
         friendRepository.deleteById(id);
     }
 
