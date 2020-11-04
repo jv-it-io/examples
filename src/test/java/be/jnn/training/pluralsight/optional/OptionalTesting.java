@@ -2,8 +2,10 @@ package be.jnn.training.pluralsight.optional;
 
 import org.junit.Test;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -80,7 +82,46 @@ public class OptionalTesting {
 
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void createObjectOptionalThrowException(){
+        Optional<String> optional = Optional.ofNullable(null);
+       optional.orElseThrow(IllegalArgumentException::new);
 
+    }
+
+    @Test
+    public void createObjectOptionalFilter(){
+        Optional<String> optional = Optional.ofNullable(MESSAGE);
+        Boolean present = optional.filter(value -> value.equals(MESSAGE)).isPresent();
+        assertThat(present).isTrue();
+        present = optional.filter(value -> value.equals(MESSAGE_UPDATE)).isPresent();
+        assertThat(present).isFalse();
+    }
+
+    @Test
+    public void createObjectOptionalTransformValue(){
+        Optional<String> optional = Optional.ofNullable(MESSAGE);
+        String message_uppercase = optional.map(String::toUpperCase).get();
+        assertThat(message_uppercase).isEqualTo(MESSAGE.toUpperCase());
+
+        Optional<Optional<String>> optional_inception = optional.of(optional);
+        String message_lowercase = optional_inception.flatMap(
+                value -> value.map(String::toLowerCase)).get();
+        assertThat(message_lowercase).isEqualTo(MESSAGE.toLowerCase());
+
+    }
+
+    @Test
+    public void createObjectOptionalStream(){
+        //From java 9
+        Optional<String> optional = Optional.ofNullable(MESSAGE);
+//        List<String> listFromOptional = optional.stream()
+//                .map(String::toUpperCase)
+//                .collect(Collectors.toList());
+//        assertThat(listFromOptional).containsOnly(MESSAGE);
+//        assertThat(listFromOptional).hasSize(1);
+
+    }
 
 
 }
