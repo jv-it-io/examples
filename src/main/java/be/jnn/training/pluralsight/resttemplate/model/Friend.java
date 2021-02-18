@@ -3,6 +3,7 @@ package be.jnn.training.pluralsight.resttemplate.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class Friend {
     @JsonIgnore
     private Boolean married;
 
+
     public Friend(String firstName, String lastName) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -34,6 +36,7 @@ public class Friend {
 
     private int age;
 
+    @DBRef
     private List<Address> addresses;
 
     public String getId() {
